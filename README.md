@@ -56,9 +56,10 @@ Paste into the automation so every call gets a reply:
 ```
 A user is sending a command from Claude Code to this webhook. The command is in the payload
 field "command"; "files" may list Drive file names or links. Do the work, never send, delete,
-post or spend anything without asking in chat, and save your reply as
-YYYY-MM-DD_ide-reply_<slug>.md in the "outbox" folder. If the payload is empty or unclear,
-say what arrived and ask. Every webhook call gets a reply.
+post or spend anything without asking in chat. Save each reply in the "outbox" folder as
+<id>_r<NN>-<status>.md, where <id> is the payload field "id", NN counts replies (01, 02...)
+and status is progress, question or final. Always end with a "final" reply. If the payload is
+empty or unclear, say what arrived and ask (status question). Every webhook call gets a reply.
 ```
 
 ## Use
@@ -72,8 +73,12 @@ Or ask in plain language ("manda pro Grok ..."): the `grokbot` skill triggers.
 Payload sent:
 
 ```json
-{ "command": "...", "files": ["..."], "source": "claude-code", "sentAt": "2026-10-21T12:00:00Z" }
+{ "id": "2026-10-21T143005Z-a3f9", "command": "...", "files": ["..."], "source": "claude-code", "sentAt": "2026-10-21T14:30:05Z" }
 ```
+
+Replies land in the outbox as `<id>_r01-progress.md`, `<id>_r02-question.md`, ... and the
+operation is closed when `<id>_rNN-final.md` exists. The `id` has time to the second plus a
+random suffix, so parallel operations never collide.
 
 ## What's inside
 

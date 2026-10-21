@@ -18,11 +18,16 @@ if (-not $url -or -not $key) {
   Write-Error 'Set GROKBOT_WEBHOOK_URL and GROKBOT_WEBHOOK_KEY as user environment variables.'
 }
 
+# Correlation id: ISO date + time (UTC, to the second) + 4 hex chars, e.g. 2026-10-21T143005Z-a3f9
+$now = (Get-Date).ToUniversalTime()
+$id  = '{0}-{1}' -f $now.ToString("yyyy-MM-dd'T'HHmmss'Z'"), (Get-Random -Maximum 65536).ToString('x4')
+
 $body = [ordered]@{
+  id      = $id
   command = $Command
   files   = $Files
   source  = 'claude-code'
-  sentAt  = (Get-Date).ToUniversalTime().ToString('o')
+  sentAt  = $now.ToString('o')
 } | ConvertTo-Json -Depth 5
 
 $bytes = [System.Text.UTF8Encoding]::new($false).GetBytes($body)
@@ -31,5 +36,6 @@ $resp = Invoke-WebRequest -Method Post -Uri $url `
   -ContentType 'application/json; charset=utf-8' `
   -Body $bytes -SkipHttpErrorCheck
 
+"ID $id"
 "HTTP $([int]$resp.StatusCode)"
 $resp.Content

@@ -11,16 +11,20 @@ set -euo pipefail
 [ $# -ge 1 ] || { echo "usage: send.sh \"<command>\" [files...]" >&2; exit 2; }
 
 command_text=$1; shift
-payload=$(python3 - "$command_text" "$@" <<'PY'
+# Correlation id: ISO date + time (UTC, to the second) + 4 hex chars, e.g. 2026-10-21T143005Z-a3f9
+id="$(date -u +%Y-%m-%dT%H%M%SZ)-$(printf '%04x' $((RANDOM % 65536)))"
+payload=$(python3 - "$id" "$command_text" "$@" <<'PY'
 import json, sys, datetime
 print(json.dumps({
-    "command": sys.argv[1],
-    "files": sys.argv[2:],
+    "id": sys.argv[1],
+    "command": sys.argv[2],
+    "files": sys.argv[3:],
     "source": "claude-code",
     "sentAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
 }, ensure_ascii=False))
 PY
 )
+echo "ID $id"
 
 curl -sS -w '\nHTTP %{http_code}\n' -X POST "$GROKBOT_WEBHOOK_URL" \
   -H "Authorization: Bearer $GROKBOT_WEBHOOK_KEY" \

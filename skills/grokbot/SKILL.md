@@ -30,9 +30,11 @@ with `[IDE]`.
 
 The webhook has no callback. Use one of:
 
-- **Drive outbox (recommended, works with this setup):** ask Grok Bot to also save each reply as
-  `YYYY-MM-DD_ide-reply_<slug>.md` in `!Grok Bot/outbox`. Read it with the Google Drive MCP
-  (`search_files` then `read_file_content`).
+- **Drive outbox (recommended):** every call carries an `id` (`2026-10-21T143005Z-a3f9`, printed
+  by the send script). The automation saves each reply as `<id>_r<NN>-<status>.md` in `outbox`
+  (`NN` = 01, 02...; `status` = `progress` | `question` | `final`). The operation is closed when
+  `<id>_rNN-final.md` exists; `question` means it waits on the user. Search the Drive MCP by
+  `<id>` (`search_files`, then `read_file_content`) and read replies in `rNN` order.
 - **Slack:** the automation has a "Send to Slack" tool; point replies to a channel and read it via Slack MCP.
 - **Cloud Agents API** (`POST /v1/agents`, `POST /v1/agents/{id}/runs`, `GET .../runs/{runId}`):
   true two-way, but it launches its own agent, not the Automation. Use for new agents only.
