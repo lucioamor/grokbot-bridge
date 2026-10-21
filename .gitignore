@@ -1,0 +1,7 @@
+.env
+.env.*
+*.key
+*.secret
+.in_use/
+.DS_Store
+Thumbs.db

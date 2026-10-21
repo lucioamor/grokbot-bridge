@@ -1,0 +1,15 @@
+{
+  "name": "grokbot-bridge",
+  "description": "Claude Code to Cursor Automation bridge via webhook.",
+  "owner": {
+    "name": "Lucio Amorim",
+    "url": "https://github.com/lucioamor"
+  },
+  "plugins": [
+    {
+      "name": "grokbot-bridge",
+      "source": "./",
+      "description": "Send commands from Claude Code to a Cursor Automation webhook and read replies from a Drive/Slack return channel."
+    }
+  ]
+}

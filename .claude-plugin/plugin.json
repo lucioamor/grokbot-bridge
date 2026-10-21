@@ -1,0 +1,13 @@
+{
+  "name": "grokbot-bridge",
+  "description": "Send commands from Claude Code to a Cursor Automation (webhook trigger) and read its replies from a Drive or Slack return channel. Adds the /grok command and a grokbot skill.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Lucio Amorim",
+    "url": "https://github.com/lucioamor"
+  },
+  "homepage": "https://github.com/lucioamor/grokbot-bridge",
+  "repository": "https://github.com/lucioamor/grokbot-bridge",
+  "license": "MIT",
+  "keywords": ["cursor", "automations", "webhook", "bridge", "claude-code", "ide", "agent-to-agent"]
+}
